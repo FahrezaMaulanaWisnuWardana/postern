@@ -12,7 +12,8 @@ def checksums(directory):
             entries.append(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n")
     if not entries:
         raise ValueError("release directory contains no artifacts")
-    (directory / "SHA256SUMS").write_text("".join(entries), encoding="utf-8")
+    # Binary output keeps canonical LF endings, including on Windows.
+    (directory / "SHA256SUMS").write_bytes("".join(entries).encode("utf-8"))
 
 
 if __name__ == "__main__":

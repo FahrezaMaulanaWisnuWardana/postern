@@ -103,7 +103,9 @@ class ReleaseTests(unittest.TestCase):
             first = (root / "SHA256SUMS").read_bytes()
             checksums.checksums(root)
             self.assertEqual(first, (root / "SHA256SUMS").read_bytes())
-            self.assertIn(b"  App Name.dmg\n", first)
+            expected = f"{hashlib.sha256(b'test').hexdigest()}  App Name.dmg\n"
+            self.assertEqual(first, expected.encode("utf-8"))
+            self.assertNotIn(b"\r", first)
 
 
 if __name__ == "__main__":
