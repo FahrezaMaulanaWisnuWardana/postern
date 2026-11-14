@@ -232,7 +232,9 @@ class Release:
         self.build(cli)
         # Patch only newly built executables, never source-tree resource objects.
         resources = {
-            "RT_GROUP_ICON": {"APP": {"0000": str(self.icon)}},
+            # go-winres resolves resources relative to winres.json. An absolute
+            # Windows path gets incorrectly prefixed with that directory.
+            "RT_GROUP_ICON": {"APP": {"0000": self.icon.name}},
             "RT_MANIFEST": {"#1": {"0409": {
                 "minimum-os": "win10", "execution-level": "",
                 "dpi-awareness": "per monitor v2", "long-path-aware": True,

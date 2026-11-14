@@ -95,6 +95,26 @@ class ReleaseTests(unittest.TestCase):
         self.assertNotIn("\n[UninstallDelete]", installer)
         self.assertNotIn("{userappdata}", installer)
 
+    def test_windows_resource_icon_is_relative_to_config(self):
+        with tempfile.TemporaryDirectory(prefix="postern resource test ") as directory:
+            root = Path(directory)
+            args = release.parser().parse_args([
+                "--version", "1.2.3", "--target", "windows", "--arch", "amd64",
+                "--output", str(root / "dist"),
+            ])
+            build = release.Release(args, root)
+            # Exercise real config generation without invoking Windows tools.
+            with patch.object(build, "build"), patch(
+                "release.run", side_effect=RuntimeError("stop before patching")
+            ):
+                with self.assertRaisesRegex(RuntimeError, "stop before patching"):
+                    build.windows()
+            config = root / "winres.json"
+            resource = json.loads(config.read_text())["RT_GROUP_ICON"]["APP"]["0000"]
+            self.assertEqual(resource, "icon.png")
+            self.assertFalse(Path(resource).is_absolute())
+            self.assertTrue((config.parent / resource).samefile(build.icon))
+
     def test_linux_workflows_include_gio_build_dependencies(self):
         required = (
             "pkg-config", "libwayland-dev", "libx11-dev", "libx11-xcb-dev",
