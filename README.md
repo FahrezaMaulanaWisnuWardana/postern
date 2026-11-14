@@ -86,7 +86,11 @@ Requirements:
 - Desktop client: a graphics stack — Metal on macOS, X11 or Wayland on Linux,
   Direct3D on Windows. CGO is required for the window layer. On Debian/Ubuntu
   install the headers with
-  `sudo apt install gcc libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev`.
+  ```sh
+  sudo apt install gcc pkg-config libwayland-dev libx11-dev libx11-xcb-dev \
+    libxkbcommon-dev libxkbcommon-x11-dev libxcursor-dev libxfixes-dev \
+    libegl1-mesa-dev libgles2-mesa-dev libvulkan-dev
+  ```
 - Server: no CGO. `CGO_ENABLED=0` builds a static binary.
 
 ```sh

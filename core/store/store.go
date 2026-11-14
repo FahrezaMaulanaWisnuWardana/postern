@@ -53,8 +53,7 @@ func Open(path string) (*Store, error) {
 		if err != nil {
 			return nil, err
 		}
-		u := url.URL{Scheme: "file", Path: filepath.ToSlash(abs)}
-		dsn = u.String()
+		dsn = sqliteFileURI(filepath.ToSlash(abs))
 	}
 	db, err := sql.Open("sqlite", dsn)
 	if err != nil {
@@ -98,6 +97,18 @@ func Open(path string) (*Store, error) {
 		return nil, err
 	}
 	return s, nil
+}
+
+// sqliteFileURI takes a slash-normalized absolute path. Drive-letter paths
+// need a leading slash so net/url emits file:///C:/... rather than
+// file://C:/..., which SQLite rejects as a non-local URI authority.
+// Keep URL escaping for spaces, '#', '?' and '%' in filesystem names.
+func sqliteFileURI(path string) string {
+	if len(path) >= 2 && path[1] == ':' {
+		path = "/" + path
+	}
+	u := url.URL{Scheme: "file", Path: path}
+	return u.String()
 }
 
 // Close closes the database.

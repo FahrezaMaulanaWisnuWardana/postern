@@ -95,6 +95,19 @@ class ReleaseTests(unittest.TestCase):
         self.assertNotIn("\n[UninstallDelete]", installer)
         self.assertNotIn("{userappdata}", installer)
 
+    def test_linux_workflows_include_gio_build_dependencies(self):
+        required = (
+            "pkg-config", "libwayland-dev", "libx11-dev", "libx11-xcb-dev",
+            "libxkbcommon-dev", "libxkbcommon-x11-dev", "libxcursor-dev",
+            "libxfixes-dev", "libegl1-mesa-dev", "libgles2-mesa-dev",
+            "libvulkan-dev",
+        )
+        for filename in ("ci.yml", "release.yml"):
+            workflow = (release.ROOT / ".github/workflows" / filename).read_text()
+            for dependency in required:
+                with self.subTest(workflow=filename, dependency=dependency):
+                    self.assertIn(dependency, workflow)
+
     def test_checksums_are_repeatable(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -41,7 +41,7 @@ jobs:
             libwayland-dev libx11-dev libx11-xcb-dev \
             libxkbcommon-dev libxkbcommon-x11-dev \
             libxcursor-dev libxfixes-dev \
-            libegl1-mesa-dev libgles2-mesa-dev
+            libegl1-mesa-dev libgles2-mesa-dev libvulkan-dev
       - name: Formatting
         if: runner.os == 'Linux'
         run: |
