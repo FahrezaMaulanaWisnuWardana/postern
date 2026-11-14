@@ -128,7 +128,8 @@ python3 scripts/release.py --version 0.1.0 \
   --linuxdeploy /path/to/linuxdeploy --appimagetool /path/to/appimagetool
 ```
 
-The workflow uses linuxdeploy `1-alpha-20250213-2` and AppImageKit `13`,
+The workflow uses linuxdeploy `1-alpha-20250213-2` and appimagetool `1.9.0`
+from the maintained `AppImage/appimagetool` repository,
 extracting the packaging tools so the builder does not need FUSE.
 These downloads use fixed release tags; independently verified SHA-256 pins
 for the external tools remain supply-chain hardening work before public release.
