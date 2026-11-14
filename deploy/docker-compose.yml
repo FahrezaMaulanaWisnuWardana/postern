@@ -1,0 +1,50 @@
+services:
+  yourpm:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      args:
+        VERSION: ${YOURPM_VERSION:-0.1.0}
+    image: yourpm-server:${YOURPM_VERSION:-0.1.0}
+    restart: unless-stopped
+    environment:
+      YOURPM_ADDR: ":8080"
+      YOURPM_DATA: /data
+      YOURPM_REGISTRATION: ${YOURPM_REGISTRATION:-closed}
+      YOURPM_JWT_SECRET: ${YOURPM_JWT_SECRET:?set YOURPM_JWT_SECRET in .env}
+      YOURPM_ADMIN_EMAIL: ${YOURPM_ADMIN_EMAIL:-}
+      YOURPM_ADMIN_PASSWORD: ${YOURPM_ADMIN_PASSWORD:-}
+      # Caddy is the only path to the server inside this stack, so its
+      # X-Forwarded-For header is trustworthy for per-client rate limiting.
+      YOURPM_TRUST_PROXY: "1"
+      YOURPM_METRICS_TOKEN: ${YOURPM_METRICS_TOKEN:-}
+      YOURPM_OP_RETENTION_DAYS: ${YOURPM_OP_RETENTION_DAYS:-0}
+    volumes:
+      - yourpm-data:/data
+    expose:
+      - "8080"
+    # The server is only reachable through Caddy. Uncomment to expose it on
+    # the host for debugging, never on a public interface without TLS.
+    # ports:
+    #   - "127.0.0.1:8080:8080"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      yourpm:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      YOURPM_DOMAIN: ${YOURPM_DOMAIN:?set YOURPM_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  yourpm-data:
+  caddy-data:
+  caddy-config:

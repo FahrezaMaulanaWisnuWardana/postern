@@ -1,0 +1,13 @@
+.git
+.github
+bin/
+data/
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.*
+!deploy/.env.example
+.DS_Store
+docs/
+brand/

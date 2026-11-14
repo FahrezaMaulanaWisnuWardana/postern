@@ -1,0 +1,27 @@
+# Caddy terminates TLS and forwards to the sync server.
+#
+# Set YOURPM_DOMAIN to the hostname whose DNS A/AAAA record points at this
+# machine. Caddy obtains and renews the certificate automatically.
+
+{$YOURPM_DOMAIN} {
+	encode zstd gzip
+
+	@metrics path /metrics
+	respond @metrics 403
+
+	reverse_proxy yourpm:8080 {
+		header_up X-Forwarded-For {remote_host}
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}

@@ -1,0 +1,9 @@
+# Example white-label build. The resulting binary is named acme, shows
+# "AcmeAPI" in the window title, and points new installs at Acme's sync server.
+name: AcmeAPI
+slug: acme
+version: 1.0.0
+tagline: Acme's private API workspace
+server: https://sync.acme.example
+accent: "#5BC8FF"
+website: https://acme.example

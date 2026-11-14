@@ -1,0 +1,18 @@
+# Default brand. Copy this file, edit it, then build with:
+#
+#   make build BRAND_FILE=brand/acme.yaml
+#
+# Every value can also be overridden directly, e.g.:
+#
+#   make build BRAND_NAME=AcmeAPI BRAND_SLUG=acme
+name: Postern
+slug: postern
+version: 0.1.0
+tagline: Native, private API client
+# Pre-fill the sync server field for managed deployments. Leave empty to let
+# each person choose their own server.
+server: ""
+accent: "#D9541E"
+website: ""
+# Optional small PNG logo (encoded into the binary at build time).
+# logo: brand/logo.png
